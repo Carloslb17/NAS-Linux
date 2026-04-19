@@ -1,0 +1,72 @@
+version: '3.8'
+services:
+  nextcloud:
+    image: nextcloud:latest
+    container_name: nextcloud
+    restart: always
+    ports:
+      - "${NEXTCLOUD_PORT:-8080}:80"
+    volumes:
+      - nextcloud_data:/var/www/html
+
+  jellyfin:
+    image: jellyfin/jellyfin
+    container_name: jellyfin
+    restart: always
+    ports:
+      - "${JELLYFIN_PORT:-8096}:8096"
+    volumes:
+      - ${MEDIA_PATH:-/srv/nas/media}:/media
+      - jellyfin_config:/config
+      - jellyfin_cache:/cache
+
+  portainer:
+    image: portainer/portainer-ce:latest
+    container_name: portainer
+    restart: always
+    security_opt:
+      - no-new-privileges:true
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - portainer_data:/data
+    ports:
+      - "9000:9000"
+
+  prometheus:
+    image: prom/prometheus
+    container_name: prometheus
+    restart: always
+    ports:
+      - "${PROMETHEUS_PORT:-9090}:9090"
+    volumes:
+      - ../monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
+
+  grafana:
+    image: grafana/grafana
+    container_name: grafana
+    restart: always
+    ports:
+      - "${GRAFANA_PORT:-3000}:3000"
+
+  node-exporter:
+    image: prom/node-exporter
+    container_name: node-exporter
+    restart: always
+    ports:
+      - "9100:9100"
+
+  watchtower:
+    image: containrrr/watchtower
+    container_name: watchtower
+    restart: always
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      - WATCHTOWER_CLEANUP=true
+      - WATCHTOWER_INCLUDE_RESTARTING=true
+
+volumes:
+  nextcloud_data:
+  jellyfin_config:
+  jellyfin_cache:
+  portainer_data:

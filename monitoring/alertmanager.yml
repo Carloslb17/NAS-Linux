@@ -1,0 +1,12 @@
+global:
+  resolve_timeout: 5m
+
+route:
+  receiver: 'email-admin'
+
+receivers:
+  - name: 'email-admin'
+    email_configs:
+      - to: 'admin@localhost'
+        from: 'alertmanager@localhost'
+        smarthost: 'smtp.localhost:25'
