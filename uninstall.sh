@@ -5,9 +5,9 @@ source config.env
 
 echo "Starting homelab-nas-pro uninstallation..."
 
-if [ -x "$(command -v docker-compose)" ]; then
+if [ -x "$(command -v docker)" ]; then
     cd docker
-    sudo docker-compose down || true
+    sudo docker compose down || true
     cd ..
 fi
 

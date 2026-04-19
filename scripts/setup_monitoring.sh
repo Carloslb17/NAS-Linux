@@ -9,6 +9,6 @@ log_output() {
 log_output "Setting up Monitoring..."
 
 cd "$(dirname "$0")/../docker"
-sudo docker-compose up -d prometheus grafana node-exporter
+sudo docker compose up -d prometheus grafana node-exporter
 
 log_output "Monitoring Stack Deployed."
