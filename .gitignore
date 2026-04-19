@@ -2,3 +2,4 @@ logs/*
 !logs/.gitkeep
 *.log
 .env
+config.env
