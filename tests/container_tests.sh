@@ -8,7 +8,7 @@ log() { echo "[$(date +'%Y-%m-%d %H:%M:%S')] CONTAINER_TEST: $1" | tee -a "$LOG_
 errors=0
 log "Starting Container Tests"
 
-containers=("nextcloud" "jellyfin" "grafana" "prometheus" "portainer")
+containers=("nextcloud" "jellyfin" "grafana" "prometheus" "portainer" "immich_server")
 
 for c in "${containers[@]}"; do
     if docker ps --format '{{.Names}}' | grep -Eq "^${c}$"; then

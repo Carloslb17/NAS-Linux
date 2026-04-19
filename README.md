@@ -11,6 +11,7 @@ This project provides an automated, idempotent setup to build a home NAS infrast
                                                  |
                                                  +-- Nextcloud (Port 8080)
                                                  +-- Jellyfin  (Port 8096)
+                                                 +-- Immich   (Port 2283)
                                                  +-- Portainer (Port 9000)
                                                  +-- Monitoring Stack
 ```
@@ -31,6 +32,9 @@ This project provides an automated, idempotent setup to build a home NAS infrast
 ## Usage Guide
 - Samba `\\<nas_ip>\NAS` is pre-configured.
 - Access apps safely using local IPs, or join Tailscale to access remotely.
+- Immich is included in the default `./install.sh` flow and is available on port `2283` after installation.
+- If you need to redeploy Immich independently, run `./scripts/deploy_immich.sh`.
+- Validate the full deployment with `./run_all_tests.sh`, which now includes installation verification and Immich checks.
 - Ensure you configure your monitoring defaults via the web UIs provided.
 
 ## Security Explanation

@@ -9,7 +9,7 @@ LOG_FILE="logs/tests.log"
 > "$LOG_FILE"
 
 declare -A results
-keys=("Services" "Containers" "Network" "Disk" "APIs" "Backups" "Snapshots")
+keys=("Services" "Containers" "Network" "Disk" "APIs" "Backups" "Snapshots" "Install" "Immich")
 
 run_test() {
     local script=$1
@@ -33,6 +33,8 @@ run_test "tests/disk_tests.sh" "Disk"
 run_test "tests/api_tests.sh" "APIs"
 run_test "tests/backup_tests.sh" "Backups"
 run_test "tests/snapshot_tests.sh" "Snapshots"
+run_test "tests/install_tests.sh" "Install"
+run_test "tests/immich_tests.sh" "Immich"
 
 echo ""
 echo "SYSTEM TEST SUMMARY"

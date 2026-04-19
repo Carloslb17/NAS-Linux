@@ -28,6 +28,7 @@ scripts=(
     "setup_nextcloud"
     "setup_jellyfin"
     "setup_tailscale"
+    "deploy_immich"
     "setup_snapshots"
     "setup_backups"
     "setup_monitoring"

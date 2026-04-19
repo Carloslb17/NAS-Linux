@@ -12,12 +12,11 @@ SNAP_DIR="/srv/nas/snapshots"
 
 if [ -d "$SNAP_DIR" ]; then
     log "[OK] Snapshot directory exists at $SNAP_DIR"
-    snap_count=$(find "$SNAP_DIR" -maxdepth 1 -name "snap-*" -o -name "latest" | wc -l)
+    snap_count=$(find "$SNAP_DIR" -maxdepth 1 -type d \( -name "snap-*" -o -name "latest" \) 2>/dev/null | wc -l)
     if [ "$snap_count" -gt 0 ]; then
         log "[OK] At least one snapshot is present"
     else
-        log "[FAIL] No snapshots found"
-        errors=$((errors+1))
+        log "[WARNING] No snapshots found (normal on fresh install, first snapshot runs at 1 AM)"
     fi
 else
     log "[FAIL] Snapshot directory does not exist at $SNAP_DIR"

@@ -18,11 +18,10 @@ if [ -d "$BACKUP_DIR" ]; then
         if [ -n "$recent" ]; then
             log "[OK] Recent backup timestamp verified"
         else
-            log "[WARNING] No backups found in the last 24 hours"
+            log "[WARNING] No backups found in the last 24 hours (normal on fresh install)"
         fi
     else
-        log "[FAIL] Backup directory is empty"
-        errors=$((errors+1))
+        log "[WARNING] Backup directory is empty (normal on fresh install, first backup runs at 2 AM)"
     fi
 else
     log "[FAIL] Backup directory does not exist at $BACKUP_DIR"

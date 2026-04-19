@@ -26,6 +26,8 @@ cd homelab-nas-pro
 ./install.sh
 ```
 
+> Nota: si un `docker compose` pull falla por un error de red, revisa tu conexión y vuelve a ejecutar `./install.sh`. El instalador ahora reintentará automáticamente los comandos de `docker compose`.
+
 Ejecutar:
 
 ```bash
@@ -133,6 +135,30 @@ admin / admin
 
 ```text
 http://IP_SERVIDOR:9090
+```
+
+---
+
+## Immich (photo sync)
+
+Immich is the mobile photo-sync service in this stack and is now deployed automatically as part of the default `./install.sh` flow.
+
+If you are upgrading an existing installation or want to deploy Immich separately, use:
+
+```bash
+./scripts/deploy_immich.sh
+```
+
+Then access it through Tailscale at:
+
+```text
+http://<tailscale-ip>:2283
+```
+
+If you need direct local access, open:
+
+```text
+http://IP_SERVIDOR:2283
 ```
 
 ---
@@ -423,7 +449,7 @@ ping -c 1 8.8.8.8
 Crear:
 
 ```bash
-run_all_tests.sh
+./run_all_tests.sh
 ```
 
 ```bash
@@ -432,7 +458,15 @@ run_all_tests.sh
 ./tests/system_tests.sh
 ./tests/container_tests.sh
 ./tests/network_tests.sh
+./tests/disk_tests.sh
+./tests/api_tests.sh
+./tests/backup_tests.sh
+./tests/snapshot_tests.sh
+./tests/install_tests.sh
+./tests/immich_tests.sh
 ```
+
+Este comando ejecuta las pruebas automáticas completas, incluidas las nuevas verificaciones de la instalación y el servicio Immich.
 
 ---
 

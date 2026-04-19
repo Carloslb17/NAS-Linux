@@ -13,6 +13,14 @@ On both Android and iOS devices, install:
 2. Log in with your network credentials.
 3. Verify the status is "Connected".
 
+> The current `./install.sh` flow includes Immich deployment by default. If you are using an older installation or need to redeploy Immich manually, run:
+>
+> ```bash
+> ./scripts/deploy_immich.sh
+> ```
+>
+> Then confirm the service is reachable on port `2283`.
+
 ## Step 3: Configure Immich App
 1. Open Immich.
 2. When prompted for the Server URL, enter your private Tailscale server IP and port:
@@ -20,6 +28,17 @@ On both Android and iOS devices, install:
 3. Login using your designated credentials:
    - User: `admin` (or `pareja`)
    - Password: (Your configured password)
+
+## Step 4: Verify the setup
+1. On the NAS, run:
+   ```bash
+   ./run_all_tests.sh
+   ```
+2. Confirm the `Immich` section passes.
+3. You can also run only the Immich check:
+   ```bash
+   ./tests/immich_tests.sh
+   ```
 
 ## Step 4: Enable Automatic Backup
 1. In the Immich app, navigate to **Backup** settings.
