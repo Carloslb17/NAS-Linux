@@ -38,7 +38,7 @@ services:
     ports:
       - "${PROMETHEUS_PORT:-9090}:9090"
     volumes:
-      - ../monitoring:/etc/prometheus:ro
+      - ${MONITORING_PATH:-./monitoring}:/etc/prometheus:ro
 
   grafana:
     image: grafana/grafana

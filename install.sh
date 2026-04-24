@@ -39,8 +39,9 @@ scripts=(
 
 for script in "${scripts[@]}"; do
     log "Executing $script..."
-    if ! ./scripts/${script}.sh; then
+    if ! output=$(./scripts/${script}.sh 2>&1); then
         log "Error executing $script. Stopping installation."
+        log "Error output: $output"
         exit 1
     fi
     log "$script completed successfully."

@@ -1,10 +1,14 @@
 #!/bin/bash
 set -e
-source "$(dirname "$0")/../config.env"
+SCRIPT_DIR="$(dirname "$0")"
+PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
+DOCKER_DIR="$PROJECT_ROOT/docker"
+
+source "$PROJECT_ROOT/config.env"
 
 retry() {
     local retries=${1:-3}
-    local delay=${2:-10}
+    local delay=${2:-5}
     shift 2
     local count=0
     until "$@"; do
@@ -13,7 +17,7 @@ retry() {
         if [ "$count" -ge "$retries" ]; then
             return $status
         fi
-        echo "Retry $count/$retries after failure: $*"
+        echo "Retry $count/$retries after failure (waiting ${delay}s): $*"
         sleep "$delay"
     done
 }
@@ -22,9 +26,19 @@ log_output() {
     echo "[$(date +'%Y-%m-%d %H:%M:%S')] $1" | tee -a "$LOG_FILE"
 }
 
+error_exit() {
+    log_output "ERROR: $1"
+    exit 1
+}
+
 log_output "Setting up Monitoring..."
 
-cd "$(dirname "$0")/../docker"
-retry 3 15 sudo docker compose up -d prometheus grafana node-exporter
+# Verify docker-compose.yml exists
+[ -f "$DOCKER_DIR/docker-compose.yml" ] || error_exit "docker-compose.yml not found at $DOCKER_DIR/docker-compose.yml"
 
-log_output "Monitoring Stack Deployed."
+log_output "Deploying monitoring stack (Prometheus, Grafana, Node-Exporter)..."
+if ! retry 5 30 bash -c "cd '$DOCKER_DIR' && sudo docker compose up -d prometheus grafana node-exporter"; then
+    error_exit "Failed to deploy monitoring stack after 5 retries. Check network connectivity and Docker registry availability."
+fi
+
+log_output "Monitoring Stack Deployed successfully."

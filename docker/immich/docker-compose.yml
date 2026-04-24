@@ -30,14 +30,14 @@ services:
 
   redis:
     container_name: immich_redis
-    image: docker.io/redis:6.2-alpine@sha256:4d603a1fcdaeeefb6d19a27fdfdd3664acdf263c93da7e4ba1298835f8fc3403
+    image: redis:7-alpine
     healthcheck:
       test: redis-cli ping || exit 1
     restart: always
 
   database:
     container_name: immich_postgres
-    image: docker.io/tensorchord/pgvecto-rs:pg14-v0.2.0@sha256:90724186f0a3517cf6914295b5ab410db9ce23190a2d9d0b9dd6463e3fa298f0
+    image: tensorchord/pgvecto-rs:pg14-v0.2.0
     environment:
       POSTGRES_PASSWORD: ${DB_PASSWORD}
       POSTGRES_USER: ${DB_USERNAME}

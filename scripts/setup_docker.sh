@@ -1,6 +1,10 @@
 #!/bin/bash
 set -e
-source "$(dirname "$0")/../config.env"
+SCRIPT_DIR="$(dirname "$0")"
+PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
+DOCKER_DIR="$PROJECT_ROOT/docker"
+
+source "$PROJECT_ROOT/config.env"
 
 retry() {
     local retries=${1:-3}
@@ -22,6 +26,11 @@ log_output() {
     echo "[$(date +'%Y-%m-%d %H:%M:%S')] $1" | tee -a "$LOG_FILE"
 }
 
+error_exit() {
+    log_output "ERROR: $1"
+    exit 1
+}
+
 log_output "Setting up Docker..."
 
 if ! command -v docker &> /dev/null; then
@@ -41,9 +50,29 @@ else
 fi
 
 sudo usermod -aG docker "$USER" || true
-sudo systemctl enable docker
-sudo systemctl start docker
+sudo systemctl enable docker || true
+sudo systemctl start docker || true
 
-cd "$(dirname "$0")/../docker"
-retry 3 10 sudo docker compose up -d portainer
-log_output "Base Docker services deployed."
+# Create .env file for docker-compose with proper paths
+log_output "Configuring Docker Compose environment..."
+cat > "$DOCKER_DIR/.env" << EOF
+NAS_PATH=$NAS_PATH
+MEDIA_PATH=$MEDIA_PATH
+MONITORING_PATH=$PROJECT_ROOT/monitoring
+TIMEZONE=$TIMEZONE
+NEXTCLOUD_PORT=${NEXTCLOUD_PORT:-8080}
+JELLYFIN_PORT=${JELLYFIN_PORT:-8096}
+PROMETHEUS_PORT=${PROMETHEUS_PORT:-9090}
+GRAFANA_PORT=${GRAFANA_PORT:-3000}
+EOF
+
+# Verify docker-compose.yml exists
+[ -f "$DOCKER_DIR/docker-compose.yml" ] || error_exit "docker-compose.yml not found at $DOCKER_DIR/docker-compose.yml"
+
+# Deploy base Docker services
+log_output "Deploying base Docker services..."
+if ! retry 3 10 bash -c "cd '$DOCKER_DIR' && sudo docker compose up -d portainer"; then
+    error_exit "Failed to deploy Portainer service. Check Docker Compose configuration and disk space."
+fi
+
+log_output "Base Docker services deployed successfully."
